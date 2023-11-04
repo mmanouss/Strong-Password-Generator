@@ -16,7 +16,7 @@ class PasswordGeneratorGUI:
         self.copyString = 'Copy to Clipboard'
         self.root = tk.Tk()
         self.root.title(title)
-        self.root.geometry('500x400')
+        self.root.geometry('500x500')
         self.root.configure(bg="light blue")
         self.root.resizable(0, 0)
         self.root.grid_rowconfigure(0, weight=1)
@@ -99,8 +99,22 @@ class PasswordGeneratorGUI:
 def create_password(password_length):
     """Randomly generates a password of _password_length_, utilizing any punctuation, digits, and ascii letters."""
     punctuation = ['!', '#', '$', '%', '(', ')', '*', '+', '-', '?', '@', '[', ']', '^', '_', '{', '}']
+    
+    digit_weight = 2  # Adjust the weight for digits
+    letter_weight = 1 # Adjust the weight for letters
+    special_char_weight = 2  # Adjust the weight for special characters
+
+    weights = [special_char_weight] * len(punctuation) + [digit_weight] * len(string.digits) + [letter_weight] * len(string.ascii_letters)
     possible_chars = punctuation + list(string.digits) + list(string.ascii_letters)
-    return "".join([random.choice(possible_chars) for x in range(int(password_length))])
+    password_chars = random.choices(possible_chars, weights=weights, k=password_length)
+    
+    password = "".join(password_chars)
+    
+    punctuation_percent = sum(1 for char in password if char in punctuation)/password_length
+    letters_percent = sum(1 for char in password if char in list(string.digits))/password_length
+    digits_percent = sum(1 for char in password if char in list(string.ascii_letters))/password_length
+
+    return password + f"\n\n% Special Characters: {punctuation_percent*100:.1f}%\n% Letters: {letters_percent*100:.1f}%\n% Digits: {digits_percent*100:.1f}%"
 
 if __name__ == "__main__":
     app = PasswordGeneratorGUI()
