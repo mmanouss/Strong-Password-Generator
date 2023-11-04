@@ -11,14 +11,14 @@ class PasswordGeneratorGUI:
     Implements a GUI using tkinter for ease of use."""
     
     def __init__(self, title="Password Generation"):
-        self.labelString = 'Enter desired password length:'
+        self.labelString = 'Enter desired password length:\n*note: must be within range of 8 to 512*'
         self.buttonString = 'Generate'
         self.copyString = 'Copy to Clipboard'
         self.root = tk.Tk()
         self.root.title(title)
-        self.root.geometry('500x350')
+        self.root.geometry('500x400')
         self.root.configure(bg="light blue")
-        self.root.resizable(1, 0)
+        self.root.resizable(0, 0)
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_columnconfigure(0, weight=1)
         
@@ -82,15 +82,15 @@ class PasswordGeneratorGUI:
         password_length = self.userInput.get()
         if password_length.isnumeric():
             password_length = int(password_length)
-            if password_length >= 8 and password_length <= 500:
+            if password_length >= 8 and password_length <= 512:
                 password = create_password(password_length)
-                self.display.set('Password generated!\nEnter desired length for new password:')
+                self.display.set('Password generated!\nEnter desired length for new password:\n*note: must be within range of 8 to 512*')
                 self.passwordDisplay.config(text=password)
                 self.makeCopyButton()
             else: 
-                self.display.set('Password must be 4-500 characters long.')
+                self.display.set('Password must be within range of 8 to 512 characters in length.')
         else:
-            self.display.set('Please enter a numeric value.')
+            self.display.set('Please enter a numeric value between 8 and 512.')
 
     def clickedExit(self):
         """Checks if exit button is clicked and destroys the window if so."""
