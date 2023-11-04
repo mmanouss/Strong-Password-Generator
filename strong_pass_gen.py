@@ -36,6 +36,7 @@ class PasswordGeneratorGUI:
         self.makeEntry()
         self.makeButton()
         self.makePasswordDisplay()
+        self.makeStatsDisplay()
         self.makeExitButton()
 
     def makeEntry(self):
@@ -57,12 +58,17 @@ class PasswordGeneratorGUI:
     def makeExitButton(self):
         """Creates the GUI exit button."""
         self.exitButton = tk.Button(self.topFrame, text="Exit", fg="#614553", highlightbackground="light blue", command=self.clickedExit)
-        self.exitButton.grid(row=6, column=0)
+        self.exitButton.grid(row=7, column=0)
     
     def makePasswordDisplay(self):
         """Creates the label displaying the generated password."""
         self.passwordDisplay = tk.Label(self.topFrame, text="", fg="#614553", bg="light blue", wraplength=400)
         self.passwordDisplay.grid(row=4, column=0)
+        
+    def makeStatsDisplay(self):
+        """Creates the label displaying the generated password."""
+        self.statsDisplay = tk.Label(self.topFrame, text="", fg="#614553", bg="light blue", wraplength=400)
+        self.statsDisplay.grid(row=5, column=0)
 
     def makeCopyButton(self):
         """Creates the button that allows a user to copy to clipboard."""
@@ -86,6 +92,7 @@ class PasswordGeneratorGUI:
                 password = create_password(password_length)
                 self.display.set('Password generated!\nEnter desired length for new password:\n*note: must be within range of 8 to 512*')
                 self.passwordDisplay.config(text=password)
+                self.statsDisplay.config(text=calc_pass_stats(password))
                 self.makeCopyButton()
             else: 
                 self.display.set('Password must be within range of 8 to 512 characters in length.')
@@ -100,21 +107,22 @@ def create_password(password_length):
     """Randomly generates a password of _password_length_, utilizing any punctuation, digits, and ascii letters."""
     punctuation = ['!', '#', '$', '%', '(', ')', '*', '+', '-', '?', '@', '[', ']', '^', '_', '{', '}']
     
-    digit_weight = 2  # Adjust the weight for digits
-    letter_weight = 1 # Adjust the weight for letters
-    special_char_weight = 2  # Adjust the weight for special characters
+    digit_weight = 2
+    letter_weight = 1
+    special_char_weight = 2
 
     weights = [special_char_weight] * len(punctuation) + [digit_weight] * len(string.digits) + [letter_weight] * len(string.ascii_letters)
     possible_chars = punctuation + list(string.digits) + list(string.ascii_letters)
     password_chars = random.choices(possible_chars, weights=weights, k=password_length)
-    
-    password = "".join(password_chars)
-    
-    punctuation_percent = sum(1 for char in password if char in punctuation)/password_length
-    letters_percent = sum(1 for char in password if char in list(string.digits))/password_length
-    digits_percent = sum(1 for char in password if char in list(string.ascii_letters))/password_length
 
-    return password + f"\n\n% Special Characters: {punctuation_percent*100:.1f}%\n% Letters: {letters_percent*100:.1f}%\n% Digits: {digits_percent*100:.1f}%"
+    return "".join(password_chars)
+
+def calc_pass_stats(password):
+    punctuation = ['!', '#', '$', '%', '(', ')', '*', '+', '-', '?', '@', '[', ']', '^', '_', '{', '}']
+    punctuation_percent = sum(1 for char in password if char in punctuation)/len(password)
+    letters_percent = sum(1 for char in password if char in list(string.digits))/len(password)
+    digits_percent = sum(1 for char in password if char in list(string.ascii_letters))/len(password)
+    return f"\n% Special Characters: {punctuation_percent*100:.1f}%\n% Letters: {letters_percent*100:.1f}%\n% Digits: {digits_percent*100:.1f}%"
 
 if __name__ == "__main__":
     app = PasswordGeneratorGUI()
