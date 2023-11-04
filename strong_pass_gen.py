@@ -1,8 +1,15 @@
+# strong_pass_gen.py
+#
+# Module that creates a strong password generator, with GUI.
+
 import string
 import random
 import tkinter as tk
 
 class PasswordGeneratorGUI:
+    """A class that creates a randomly generated strong password of the user's desired length.
+    Implements a GUI using tkinter for ease of use."""
+    
     def __init__(self, title="Password Generation"):
         self.labelString = 'Enter desired password length:'
         self.buttonString = 'Generate'
@@ -24,6 +31,7 @@ class PasswordGeneratorGUI:
         self.createGUI()
 
     def createGUI(self):
+        """Creates the GUI window."""
         self.makeLabel()
         self.makeEntry()
         self.makeButton()
@@ -31,44 +39,46 @@ class PasswordGeneratorGUI:
         self.makeExitButton()
 
     def makeEntry(self):
+        """Creates the text entry box."""
         self.textEntry = tk.Entry(self.topFrame, textvariable=self.userInput, fg="#614553", bg="white")
         self.textEntry.grid(row=1, column=0)
 
     def makeLabel(self):
+        """Creates the label providing user instructions within the GUI."""
         self.display.set(self.labelString)
         self.displayLabel = tk.Label(self.topFrame, textvariable=self.display, fg="#614553", bg="light blue")
         self.displayLabel.grid(row=0, column=0)
 
     def makeButton(self):
-        self.gameButton = tk.Button(self.topFrame, text=self.buttonString, fg="#614553", highlightbackground="light blue", command=self.clicked)
-        self.gameButton.grid(row=2, column=0)
-
-    def disableButton(self):
-        self.gameButton['state'] = tk.DISABLED
-
-    def enableButton(self):
-        self.gameButton['state'] = tk.NORMAL
-
+        """Creates the password generation button."""
+        self.generateButton = tk.Button(self.topFrame, text=self.buttonString, fg="#614553", highlightbackground="light blue", command=self.clickedGenerate)
+        self.generateButton.grid(row=2, column=0)
+        
     def makeExitButton(self):
+        """Creates the GUI exit button."""
         self.exitButton = tk.Button(self.topFrame, text="Exit", fg="#614553", highlightbackground="light blue", command=self.clickedExit)
         self.exitButton.grid(row=6, column=0)
     
     def makePasswordDisplay(self):
+        """Creates the label displaying the generated password."""
         self.passwordDisplay = tk.Label(self.topFrame, text="", fg="#614553", bg="light blue", wraplength=400)
         self.passwordDisplay.grid(row=4, column=0)
 
     def makeCopyButton(self):
+        """Creates the button that allows a user to copy to clipboard."""
         self.copyButton = tk.Button(self.topFrame, text=self.copyString, fg="#614553", highlightbackground="light blue", command=self.copyToClipboard)
         self.copyButton.grid(row=3, column=0)
 
     def copyToClipboard(self):
+        """Updates the user's clipboard with the generated password."""
         generated_password = self.passwordDisplay.cget("text")
         if generated_password:
             self.root.clipboard_clear()
             self.root.clipboard_append(generated_password)
-            self.root.update() #updates clipboard with password
+            self.root.update() 
 
-    def clicked(self):
+    def clickedGenerate(self):
+        """Checks if generate button is clicked, and ensures user input is valid."""
         password_length = self.userInput.get()
         if password_length.isnumeric():
             password_length = int(password_length)
@@ -83,9 +93,11 @@ class PasswordGeneratorGUI:
             self.display.set('Please enter a numeric value.')
 
     def clickedExit(self):
+        """Checks if exit button is clicked and destroys the window if so."""
         self.root.destroy()
 
 def create_password(password_length):
+    """Randomly generates a password of _password_length_, utilizing any punctuation, digits, and ascii letters."""
     possible_chars = list(string.punctuation + string.digits + string.ascii_letters)
     return "".join([random.choice(possible_chars) for x in range(int(password_length))])
 
