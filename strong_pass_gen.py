@@ -82,7 +82,7 @@ class PasswordGeneratorGUI:
         password_length = self.userInput.get()
         if password_length.isnumeric():
             password_length = int(password_length)
-            if password_length >= 4 and password_length <= 500:
+            if password_length >= 8 and password_length <= 500:
                 password = create_password(password_length)
                 self.display.set('Password generated!\nEnter desired length for new password:')
                 self.passwordDisplay.config(text=password)
@@ -98,7 +98,8 @@ class PasswordGeneratorGUI:
 
 def create_password(password_length):
     """Randomly generates a password of _password_length_, utilizing any punctuation, digits, and ascii letters."""
-    possible_chars = list(string.punctuation + string.digits + string.ascii_letters)
+    punctuation = ['!', '#', '$', '%', '(', ')', '*', '+', '-', '?', '@', '[', ']', '^', '_', '{', '}']
+    possible_chars = punctuation + list(string.digits) + list(string.ascii_letters)
     return "".join([random.choice(possible_chars) for x in range(int(password_length))])
 
 if __name__ == "__main__":
